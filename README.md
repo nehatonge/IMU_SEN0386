@@ -156,13 +156,23 @@ ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map base_link
 ## Package Structure
 
 ```
-imu_serial_node/
-│
-├── imu_node.py
-├── package.xml
-├── setup.py
-├── setup.cfg
-└── README.md
+ros2imu_ws/
+└── src/
+    └── imu_serial_node/
+        ├── imu_serial_node/
+        │   ├── __init__.py
+        │   └── imu_node.py
+        │
+        ├── test/
+        │   ├── test_copyright.py
+        │   ├── test_flake8.py
+        │   └── test_pep257.py
+        │
+        ├── package.xml
+        ├── setup.py
+        ├── setup.cfg
+        └── README.md
+
 ```
 
 ---
