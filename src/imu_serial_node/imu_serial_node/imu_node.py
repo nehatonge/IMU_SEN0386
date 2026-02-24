@@ -4,6 +4,38 @@ from sensor_msgs.msg import Imu
 import serial
 import struct
 import math
+import serial.tools.list_ports
+
+
+# ---------------- AUTO PORT DETECTION ----------------
+def find_imu_port():
+    ports = list(serial.tools.list_ports.comports())
+
+    if not ports:
+        return None
+
+    for port in ports:
+        description = port.description.lower()
+        device = port.device.lower()
+
+        # Preferred detection (USB-Serial chips)
+        if (
+            "ch340" in description or
+            "cp210" in description or
+            "ftdi" in description or
+            "usb serial" in description
+        ):
+            return port.device
+
+        # Fallback detection (Linux USB naming)
+        if (
+            "ttyusb" in device or
+            "ttyacm" in device
+        ):
+            return port.device
+
+    return None
+# -----------------------------------------------------
 
 
 class IMUSerialNode(Node):
@@ -13,7 +45,16 @@ class IMUSerialNode(Node):
 
         self.publisher_ = self.create_publisher(Imu, 'imu/data', 10)
 
-        self.ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+        # 🔥 Auto detect port
+        port = find_imu_port()
+
+        if port is None:
+            self.get_logger().error("No IMU serial device found!")
+            raise RuntimeError("IMU not connected")
+
+        self.get_logger().info(f"Using IMU port: {port}")
+
+        self.ser = serial.Serial(port, 9600, timeout=1)
 
         self.acc = [0.0, 0.0, 0.0]
         self.gyro = [0.0, 0.0, 0.0]
