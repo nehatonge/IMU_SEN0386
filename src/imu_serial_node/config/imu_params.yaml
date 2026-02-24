@@ -1,1 +1,14 @@
+auto_detect: true
 
+imus:
+  - port: "/dev/ttyUSB0"
+    frame_id: "imu_front"
+    topic_name: "/imu_front/data"
+    accel_offset: {x: 0.01, y: -0.02, z: 0.00}
+    gyro_offset: {x: 0.00, y: 0.00, z: 0.01}
+
+  - port: "/dev/ttyUSB1"
+    frame_id: "imu_rear"
+    topic_name: "/imu_rear/data"
+    accel_offset: {x: 0.00, y: 0.00, z: 0.00}
+    gyro_offset: {x: 0.00, y: 0.00, z: 0.00}
