@@ -1,239 +1,225 @@
-# IMU Serial Node (ROS 2 - Humble)
+IMU Serial Node (ROS 2 - Humble)
+ROS 2 Compatibility
+ROS Version	Status
+ROS 2 Humble	✅ Tested
 
-ROS 2 driver for DFRobot Serial 6-Axis Accelerometer (SEN0386).  
-This node reads IMU data over UART (USB Serial), converts Roll-Pitch-Yaw to Quaternion, and publishes standard `sensor_msgs/msg/Imu` messages for visualization in RViz2.
+OS: Ubuntu 22.04
 
----
+Features
 
-## Overview
+Parses IMU packet format:
 
-This project integrates a serial IMU sensor with ROS 2 Humble and enables:
+0x55 0x51 → Acceleration
 
-- Real-time IMU data publishing
-- Quaternion orientation output
-- Angular velocity (rad/s)
-- Linear acceleration (m/s²)
-- RViz2 3D visualization
+0x55 0x52 → Gyroscope
 
-Designed for robotics learning, embedded systems, and ROS2-based development.
+0x55 0x53 → Angle (Roll, Pitch, Yaw)
 
----
+Converts RPY → Quaternion
 
-## Hardware Used
+Publishes standard ROS2 Imu message
 
-- Sensor: DFRobot Serial 6-Axis Accelerometer (SEN0386)
-- Communication: UART over USB
-- Default Port: `/dev/ttyUSB0`
-- Baudrate: 9600
+Configurable Frame ID
 
-Product Wiki:  
-https://wiki.dfrobot.com/Serial_6_Axis_Accelerometer_SKU_SEN0386
+Configurable topic names
 
----
+Calibration offsets via YAML
 
-## ROS 2 Compatibility
+Automatic USB port detection
 
-| ROS Version | Status |
-|-------------|--------|
-| ROS 2 Humble | ✅ Tested |
+Manual serial port configuration
 
- OS: Ubuntu 22.04
+Multi-IMU launch support
 
----
+Compatible with RViz2 IMU display
 
-## Features
-
-- Parses IMU packet format:
-  - `0x55 0x51` → Acceleration
-  - `0x55 0x52` → Gyroscope
-  - `0x55 0x53` → Angle (Roll, Pitch, Yaw)
-- Converts RPY → Quaternion
-- Publishes standard ROS2 `Imu` message
-- Frame ID: `base_link`
-- Approx. 100 Hz publishing rate
-- Compatible with RViz2 IMU display
-
----
-
-## Installation
-
-### 1️⃣ Place package in workspace
-
-```bash
-cd ~/ros2_ws/src
-```
-
-Add the `imu_serial_node` package inside `src`.
-
----
-
-### 2️⃣ Build Workspace
-
-```bash
-cd ~/ros2_ws
+Installation
+1️⃣ Clone Repository
+cd ~
+git clone https://github.com/nehatonge/IMU_SEN0386.git
+cd IMU_SEN0386
+2️⃣ Build Workspace
 colcon build
-```
+3️⃣ Source Workspace
+source install/setup.bash
+Configuration
 
----
+All configuration is handled inside:
 
-### 3️⃣ Source ROS 2 and Workspace
+config/imu_params.yaml
 
-```bash
-source /opt/ros/humble/setup.bash
-source ~/ros2_ws/install/setup.bash
-```
+Example configuration:
 
----
+auto_detect: true
 
-## Running the Node
+imus:
+  - port: "/dev/ttyUSB0"
+    frame_id: "imu_front"
+    topic_name: "/imu_front/data"
+    accel_offset: {x: 0.01, y: -0.02, z: 0.00}
+    gyro_offset: {x: 0.00, y: 0.00, z: 0.01}
 
-```bash
-ros2 run imu_serial_node imu_node
-```
+  - port: "/dev/ttyUSB1"
+    frame_id: "imu_rear"
+    topic_name: "/imu_rear/data"
+    accel_offset: {x: 0.00, y: 0.00, z: 0.00}
+    gyro_offset: {x: 0.00, y: 0.00, z: 0.00}
+Parameter Explanation
 
-The node publishes:
+auto_detect
+Enables automatic USB port detection. If detection fails, manual configuration is used.
 
-```
-/imu/data  →  sensor_msgs/msg/Imu
-```
+port
+Serial device path (e.g., /dev/ttyUSB0).
 
----
+frame_id
+TF frame assigned to the IMU message header.
 
-## Verify IMU Data
+topic_name
+ROS2 topic where IMU data will be published.
 
-```bash
-ros2 topic echo /imu/data
-```
+accel_offset
+Offset applied to linear acceleration values.
+
+gyro_offset
+Offset applied to angular velocity values.
+
+Offsets help correct sensor bias without modifying source code.
+
+Running the Driver (Multi-IMU Launch)
+ros2 launch imu_serial_node imu_multi.launch.py
+
+Each IMU defined in the YAML file runs as a separate ROS2 node.
+
+Published Topics
+
+Each IMU publishes to its configured topic:
+
+Example:
+
+/imu_front/data
+/imu_rear/data
+
+Message Type:
+
+sensor_msgs/msg/Imu
+Verify IMU Data
+ros2 topic list
+ros2 topic echo /imu_front/data
 
 You should see:
 
-- Header
-- Orientation (x, y, z, w)
-- Angular velocity
-- Linear acceleration
+Header
 
----
+Orientation (x, y, z, w)
 
-## RViz2 Visualization
+Angular velocity
 
-### 1️⃣ Launch RViz2
+Linear acceleration
 
-```bash
+RViz2 Visualization
+1️⃣ Launch RViz2
 rviz2
-```
+2️⃣ Set Fixed Frame
 
-### 2️⃣ Set Fixed Frame
+Set the Fixed Frame to the configured frame_id
+Example:
 
-```
-base_link
-```
+imu_front
+3️⃣ Add IMU Display
 
-### 3️⃣ Add IMU Display
+Click Add
 
-- Click **Add**
-- Select **By display type**
-- Choose **Imu**
-- Set Topic to:
+Select By display type
 
-```
-/imu/data
-```
+Choose Imu
+
+Set Topic to:
+
+/imu_front/data
 
 Rotate the IMU sensor — the 3D axis should rotate accordingly.
 
----
-
-## Optional: Static Transform
+Optional: Static Transform
 
 If required, publish a static transform:
 
-```bash
-ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map base_link
-```
-
----
-
-## Package Structure
-
-```
-ros2imu_ws/
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map imu_front
+Package Structure
+IMU_SEN0386/
 └── src/
     └── imu_serial_node/
         ├── imu_serial_node/
         │   ├── __init__.py
         │   └── imu_node.py
         │
-        ├── test/
-        │   ├── test_copyright.py
-        │   ├── test_flake8.py
-        │   └── test_pep257.py
+        ├── launch/
+        │   └── imu_multi.launch.py
         │
+        ├── config/
+        │   └── imu_params.yaml
+        │
+        ├── resource/
         ├── package.xml
         ├── setup.py
         ├── setup.cfg
         └── README.md
+Node Details
 
-```
+Node Executable: imu_node
 
----
+Launch File: imu_multi.launch.py
 
-## Node Details
+Message Type: sensor_msgs/msg/Imu
 
-- Node Name: `imu_serial_node`
-- Topic: `/imu/data`
-- Message Type: `sensor_msgs/msg/Imu`
-- Frame ID: `base_link`
-- Timer Period: 0.01s (~100 Hz)
+Timer Period: 0.01s (~100 Hz)
 
----
+Baudrate: 9600
 
-## Troubleshooting
+Troubleshooting
+No data in RViz
 
-### No data in RViz
+Ensure launch file is running
 
-- Ensure node is running
-- Check topic exists:
-  ```bash
-  ros2 topic list
-  ```
-- Set Fixed Frame = `base_link`
+Check topic exists:
 
-### Serial Permission Error
+ros2 topic list
 
-```bash
+Verify Fixed Frame matches frame_id
+
+Serial Permission Error
 sudo usermod -a -G dialout $USER
-```
 
 Then reboot.
 
-### Check Serial Port
-
-```bash
+Check Serial Port
 ls /dev/ttyUSB*
-```
+ls /dev/ttyACM*
+Future Improvements
 
----
+Dynamic TF broadcasting
 
-## Future Improvements
+Covariance matrix estimation
 
-- Launch file integration
-- Dynamic TF broadcasting
-- Covariance matrix estimation
-- Sensor calibration routine
-- URDF + RobotModel visualization
-- ROS2 bag recording support
+Sensor calibration routine
 
----
+URDF + RobotModel visualization
 
-## Author
+ROS2 bag recording support
 
-Neha Tonge  
-Electronics Engineering (VLSI Major, Robotics Minor)  
-ROS 2 & Embedded Systems Developer  
+Sensor fusion (EKF integration)
 
----
+Author
 
-## License
+Neha Tonge
+Electronics Engineering (VLSI Major, Robotics Minor)
+ROS 2 & Embedded Systems Developer
 
-© 2026 Neha Tonge.  
+License
+
+© 2026 Neha Tonge.
 All rights reserved.
+
+
+
+
