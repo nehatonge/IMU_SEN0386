@@ -1,0 +1,24 @@
+[0.486s] Invoking command in '/home/neh/IMU_SEN0386/src/imu_serial_node': PYTHONPATH=/home/neh/IMU_SEN0386/build/imu_serial_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/imu_serial_node build --build-base /home/neh/IMU_SEN0386/build/imu_serial_node/build install --record /home/neh/IMU_SEN0386/build/imu_serial_node/install.log --single-version-externally-managed install_data
+[0.640s] running egg_info
+[0.640s] writing ../../build/imu_serial_node/imu_serial_node.egg-info/PKG-INFO
+[0.640s] writing dependency_links to ../../build/imu_serial_node/imu_serial_node.egg-info/dependency_links.txt
+[0.640s] writing entry points to ../../build/imu_serial_node/imu_serial_node.egg-info/entry_points.txt
+[0.640s] writing requirements to ../../build/imu_serial_node/imu_serial_node.egg-info/requires.txt
+[0.640s] writing top-level names to ../../build/imu_serial_node/imu_serial_node.egg-info/top_level.txt
+[0.642s] reading manifest file '../../build/imu_serial_node/imu_serial_node.egg-info/SOURCES.txt'
+[0.646s] writing manifest file '../../build/imu_serial_node/imu_serial_node.egg-info/SOURCES.txt'
+[0.646s] running build
+[0.646s] running build_py
+[0.647s] copying imu_serial_node/imu_node.py -> /home/neh/IMU_SEN0386/build/imu_serial_node/build/lib/imu_serial_node
+[0.647s] running install
+[0.647s] running install_lib
+[0.648s] copying /home/neh/IMU_SEN0386/build/imu_serial_node/build/lib/imu_serial_node/imu_node.py -> /home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node
+[0.648s] byte-compiling /home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node/imu_node.py to imu_node.cpython-310.pyc
+[0.649s] running install_data
+[0.650s] running install_egg_info
+[0.651s] removing '/home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node-1.0.0-py3.10.egg-info' (and everything under it)
+[0.651s] Copying ../../build/imu_serial_node/imu_serial_node.egg-info to /home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node-1.0.0-py3.10.egg-info
+[0.652s] running install_scripts
+[0.666s] Installing imu_node script to /home/neh/IMU_SEN0386/install/imu_serial_node/lib/imu_serial_node
+[0.667s] writing list of installed files to '/home/neh/IMU_SEN0386/build/imu_serial_node/install.log'
+[0.691s] Invoked command in '/home/neh/IMU_SEN0386/src/imu_serial_node' returned '0': PYTHONPATH=/home/neh/IMU_SEN0386/build/imu_serial_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/imu_serial_node build --build-base /home/neh/IMU_SEN0386/build/imu_serial_node/build install --record /home/neh/IMU_SEN0386/build/imu_serial_node/install.log --single-version-externally-managed install_data

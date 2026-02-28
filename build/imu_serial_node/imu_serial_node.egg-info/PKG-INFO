@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: imu-serial-node
+Version: 1.0.0
+Summary: ROS2 driver for DFRobot Serial 6-Axis IMU (SEN0386)
+Home-page: UNKNOWN
+Maintainer: Neha Tonge
+Maintainer-email: nehatonge30@gmail.com
+License: All rights reserved
+Platform: UNKNOWN
+
+UNKNOWN
+
