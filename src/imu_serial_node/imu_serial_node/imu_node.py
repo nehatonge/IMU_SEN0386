@@ -2,12 +2,12 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
 from rcl_interfaces.msg import SetParametersResult
-from std_srvs.srv import Trigger
 import serial
 import struct
 import math
-import sqlite3
-import os
+
+# Import database manager
+from imu_serial_node.db_manager import CalibrationDB
 
 
 class IMUSerialNode(Node):
@@ -48,16 +48,31 @@ class IMUSerialNode(Node):
         ]
 
         # -------- DATABASE INIT --------
-        self.init_database()
-        self.load_latest_calibration()
+        self.db = CalibrationDB(self.frame_id)
 
-        # Save calibration service
-        self.save_service = self.create_service(
-            Trigger,
-            'save_calibration',
-            self.save_calibration_callback
-        )
+        rows = self.db.load_params()
 
+        for param_name, value in rows:
+
+            if param_name == 'accel_offset.x':
+                self.accel_offset[0] = value
+
+            elif param_name == 'accel_offset.y':
+                self.accel_offset[1] = value
+
+            elif param_name == 'accel_offset.z':
+                self.accel_offset[2] = value
+
+            elif param_name == 'gyro_offset.x':
+                self.gyro_offset[0] = value
+
+            elif param_name == 'gyro_offset.y':
+                self.gyro_offset[1] = value
+
+            elif param_name == 'gyro_offset.z':
+                self.gyro_offset[2] = value
+
+        # Publisher
         self.publisher_ = self.create_publisher(Imu, topic_name, 10)
 
         self.get_logger().info(f"Using IMU port: {port}")
@@ -117,7 +132,8 @@ class IMUSerialNode(Node):
 
         self.publisher_.publish(msg)
 
-    #  Dynamic Parameter Callback
+    # -------- Dynamic Parameter Callback --------
+
     def parameter_callback(self, params):
 
         for param in params:
@@ -125,112 +141,34 @@ class IMUSerialNode(Node):
             if param.name == 'accel_offset.x':
                 if self.accel_offset[0] != param.value:
                     self.accel_offset[0] = param.value
-                    self.save_single_param(param.name, param.value)
+                    self.db.save_param(param.name, param.value)
 
             elif param.name == 'accel_offset.y':
                 if self.accel_offset[1] != param.value:
                     self.accel_offset[1] = param.value
-                    self.save_single_param(param.name, param.value)
+                    self.db.save_param(param.name, param.value)
 
             elif param.name == 'accel_offset.z':
                 if self.accel_offset[2] != param.value:
                     self.accel_offset[2] = param.value
-                    self.save_single_param(param.name, param.value)
+                    self.db.save_param(param.name, param.value)
 
             elif param.name == 'gyro_offset.x':
                 if self.gyro_offset[0] != param.value:
                     self.gyro_offset[0] = param.value
-                    self.save_single_param(param.name, param.value)
+                    self.db.save_param(param.name, param.value)
 
             elif param.name == 'gyro_offset.y':
                 if self.gyro_offset[1] != param.value:
                     self.gyro_offset[1] = param.value
-                    self.save_single_param(param.name, param.value)
+                    self.db.save_param(param.name, param.value)
 
             elif param.name == 'gyro_offset.z':
                 if self.gyro_offset[2] != param.value:
                     self.gyro_offset[2] = param.value
-                    self.save_single_param(param.name, param.value)
+                    self.db.save_param(param.name, param.value)
 
         return SetParametersResult(successful=True)
-   
-    # -------- DATABASE FUNCTIONS --------
-
-    def init_database(self):
-        db_path = os.path.join(os.getcwd(), "imu_calibration.db")
-        self.conn = sqlite3.connect(db_path)
-        self.cursor = self.conn.cursor()
-
-        self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS imu_calibration_history (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                frame_id TEXT,
-                param_name TEXT,
-                value REAL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        self.conn.commit()
-            
-
-    def load_latest_calibration(self):
-
-        try:
-            self.cursor.execute("""
-                SELECT param_name, value
-                FROM imu_calibration_history
-                WHERE frame_id = ?
-                ORDER BY id ASC
-            """, (self.frame_id,))
-
-            rows = self.cursor.fetchall()
-
-            if not rows:
-                self.get_logger().info("No calibration history found.")
-                return
-
-            for param_name, value in rows:
-
-                if param_name == 'accel_offset.x':
-                    self.accel_offset[0] = value
-
-                elif param_name == 'accel_offset.y':
-                    self.accel_offset[1] = value
-
-                elif param_name == 'accel_offset.z':
-                    self.accel_offset[2] = value
-
-                elif param_name == 'gyro_offset.x':
-                    self.gyro_offset[0] = value
-
-                elif param_name == 'gyro_offset.y':
-                    self.gyro_offset[1] = value
-
-                elif param_name == 'gyro_offset.z':
-                    self.gyro_offset[2] = value
-
-            self.get_logger().info("Loaded calibration from delta history.")
-
-        except Exception as e:
-            self.get_logger().error(f"Database load failed: {e}")
-    def save_single_param(self, param_name, value):
-
-        self.cursor.execute("""
-            INSERT INTO imu_calibration_history
-            (frame_id, param_name, value)
-            VALUES (?, ?, ?)
-        """, (
-            self.frame_id,
-            param_name,
-            value
-        ))
-
-        self.conn.commit()
-        self.get_logger().info(f"Saved {param_name} to database.")
-    def save_calibration_callback(self, request, response):
-        response.success = True
-        response.message = "Delta model auto-saves parameters."
-        return response
 
 
 def main(args=None):
