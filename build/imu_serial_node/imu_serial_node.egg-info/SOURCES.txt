@@ -10,6 +10,7 @@ setup.py
 ../../build/imu_serial_node/imu_serial_node.egg-info/zip-safe
 config/imu_params.yaml
 imu_serial_node/__init__.py
+imu_serial_node/db_manager.py
 imu_serial_node/imu_node.py
 launch/imu_multi.launch.py
 resource/imu_serial_node

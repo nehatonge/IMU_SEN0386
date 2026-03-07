@@ -56,21 +56,41 @@ class IMUSerialNode(Node):
 
             if param_name == 'accel_offset.x':
                 self.accel_offset[0] = value
+                p = rclpy.parameter.Parameter(param_name, rclpy.Parameter.Type.DOUBLE,value)
+                self.set_parameters([p])
+
+
+ 
 
             elif param_name == 'accel_offset.y':
                 self.accel_offset[1] = value
+                p = rclpy.parameter.Parameter(param_name, rclpy.Parameter.Type.DOUBLE,value)
+                self.set_parameters([p])
+
 
             elif param_name == 'accel_offset.z':
                 self.accel_offset[2] = value
+                p = rclpy.parameter.Parameter(param_name, rclpy.Parameter.Type.DOUBLE,value)
+                self.set_parameters([p])
+
 
             elif param_name == 'gyro_offset.x':
                 self.gyro_offset[0] = value
+                p = rclpy.parameter.Parameter(param_name, rclpy.Parameter.Type.DOUBLE,value)
+                self.set_parameters([p])
+
 
             elif param_name == 'gyro_offset.y':
                 self.gyro_offset[1] = value
+                p = rclpy.parameter.Parameter(param_name, rclpy.Parameter.Type.DOUBLE,value)
+                self.set_parameters([p])
+
 
             elif param_name == 'gyro_offset.z':
                 self.gyro_offset[2] = value
+                p = rclpy.parameter.Parameter(param_name, rclpy.Parameter.Type.DOUBLE,value)
+                self.set_parameters([p])
+
 
         # Publisher
         self.publisher_ = self.create_publisher(Imu, topic_name, 10)

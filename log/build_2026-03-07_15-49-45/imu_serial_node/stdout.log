@@ -1,0 +1,25 @@
+running egg_info
+writing ../../build/imu_serial_node/imu_serial_node.egg-info/PKG-INFO
+writing dependency_links to ../../build/imu_serial_node/imu_serial_node.egg-info/dependency_links.txt
+writing entry points to ../../build/imu_serial_node/imu_serial_node.egg-info/entry_points.txt
+writing requirements to ../../build/imu_serial_node/imu_serial_node.egg-info/requires.txt
+writing top-level names to ../../build/imu_serial_node/imu_serial_node.egg-info/top_level.txt
+reading manifest file '../../build/imu_serial_node/imu_serial_node.egg-info/SOURCES.txt'
+writing manifest file '../../build/imu_serial_node/imu_serial_node.egg-info/SOURCES.txt'
+running build
+running build_py
+copying imu_serial_node/db_manager.py -> /home/neh/IMU_SEN0386/build/imu_serial_node/build/lib/imu_serial_node
+copying imu_serial_node/imu_node.py -> /home/neh/IMU_SEN0386/build/imu_serial_node/build/lib/imu_serial_node
+running install
+running install_lib
+copying /home/neh/IMU_SEN0386/build/imu_serial_node/build/lib/imu_serial_node/db_manager.py -> /home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node
+copying /home/neh/IMU_SEN0386/build/imu_serial_node/build/lib/imu_serial_node/imu_node.py -> /home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node
+byte-compiling /home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node/db_manager.py to db_manager.cpython-310.pyc
+byte-compiling /home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node/imu_node.py to imu_node.cpython-310.pyc
+running install_data
+running install_egg_info
+removing '/home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node-1.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/imu_serial_node/imu_serial_node.egg-info to /home/neh/IMU_SEN0386/install/imu_serial_node/lib/python3.10/site-packages/imu_serial_node-1.0.0-py3.10.egg-info
+running install_scripts
+Installing imu_node script to /home/neh/IMU_SEN0386/install/imu_serial_node/lib/imu_serial_node
+writing list of installed files to '/home/neh/IMU_SEN0386/build/imu_serial_node/install.log'
